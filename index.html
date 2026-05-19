@@ -35,6 +35,18 @@
   .btn-primary { background: #2d6a4f; color: #fff; border: none; padding: 10px 24px; border-radius: 6px; font-size: 15px; cursor: pointer; margin-top: 8px; }
   .btn-primary:hover { background: #1b4332; }
   .suggestion { font-size: 12px; color: #888; margin-top: 4px; }
+  .exp-list { list-style: none; margin-top: 8px; }
+  .exp-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #eee; }
+  .exp-item .exp-info { flex: 1; }
+  .exp-item .exp-amt { font-weight: 600; color: #2d6a4f; min-width: 60px; text-align: right; }
+  .exp-item .exp-cat { font-size: 11px; color: #888; }
+  .exp-item .exp-date { font-size: 11px; color: #aaa; }
+  .btn-sm { padding: 3px 10px; font-size: 12px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; background: #fff; }
+  .btn-sm.del { border-color: #e74c3c; color: #e74c3c; }
+  .edit-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee; }
+  .edit-row input[type=number] { width: 80px; }
+  .edit-row input[type=text] { flex: 1; min-width: 80px; }
+  .edit-row select { padding: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
   .cat-tag { display: inline-flex; align-items: center; gap: 4px; background: #d8f3dc; border-radius: 20px; padding: 3px 10px; font-size: 13px; margin: 3px; }
   .cat-tag button { background: none; border: none; cursor: pointer; font-size: 14px; color: #555; line-height: 1; }
   .add-cat-row { display: flex; gap: 8px; margin-top: 6px; }
@@ -45,6 +57,7 @@
 <nav>
   <button class="active" onclick="show('home')">Home</button>
   <button onclick="show('add')">+ Expense</button>
+  <button onclick="show('expenses')">Expenses</button>
   <button onclick="show('settings')">Settings</button>
 </nav>
 
@@ -83,6 +96,11 @@
     <div class="cats" id="cat-buttons"></div>
   </div>
   <button class="btn-primary" onclick="addExpense()">Add</button>
+</div>
+
+<div id="expenses" class="view">
+  <h2 style="margin-bottom:12px">All Expenses</h2>
+  <ul class="exp-list" id="exp-list"></ul>
 </div>
 
 <div id="settings" class="view">

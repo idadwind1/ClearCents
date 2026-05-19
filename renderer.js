@@ -21,12 +21,13 @@ let selectedCat = 'Other';
 function show(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('nav button').forEach((b, i) => {
-    b.classList.toggle('active', ['home','add','settings'][i] === id);
+    b.classList.toggle('active', ['home','add','expenses','settings'][i] === id);
   });
   document.getElementById(id).classList.add('active');
   if (id === 'home') renderHome();
   if (id === 'settings') loadSettings();
   if (id === 'add') renderCatButtons();
+  if (id === 'expenses') renderExpenses();
 }
 
 function renderHome() {
@@ -103,6 +104,57 @@ function addExpense() {
   selectedCat = 'Other';
   renderCatButtons();
   show('home');
+}
+
+function renderExpenses() {
+  const d = load();
+  const list = document.getElementById('exp-list');
+  if (!d.spent.length) { list.innerHTML = '<li style="color:#aaa;padding:12px 0">No expenses yet.</li>'; return; }
+  list.innerHTML = [...d.spent].reverse().map((e, ri) => {
+    const i = d.spent.length - 1 - ri;
+    const dt = new Date(e.date).toLocaleDateString();
+    return `<li class="exp-item" id="exp-row-${i}">
+      <div class="exp-info">
+        <div>${e.desc || '—'} <span class="exp-cat">${e.cat}</span></div>
+        <div class="exp-date">${dt}</div>
+      </div>
+      <div class="exp-amt">$${e.amount.toFixed(2)}</div>
+      <button class="btn-sm" onclick="startEdit(${i})">Edit</button>
+      <button class="btn-sm del" onclick="deleteExpense(${i})">Del</button>
+    </li>`;
+  }).join('');
+}
+
+function deleteExpense(i) {
+  const d = load();
+  d.spent.splice(i, 1);
+  save(d);
+  renderExpenses();
+}
+
+function startEdit(i) {
+  const d = load();
+  const e = d.spent[i];
+  const catOptions = getCats().map(c => `<option${c === e.cat ? ' selected' : ''}>${c}</option>`).join('');
+  document.getElementById(`exp-row-${i}`).outerHTML = `
+    <li class="edit-row" id="exp-row-${i}">
+      <input type="number" id="edit-amt-${i}" value="${e.amount}" min="0" step="0.01" style="width:80px">
+      <input type="text" id="edit-desc-${i}" value="${e.desc || ''}">
+      <select id="edit-cat-${i}">${catOptions}</select>
+      <button class="btn-sm btn-primary" onclick="saveEdit(${i})">Save</button>
+      <button class="btn-sm" onclick="renderExpenses()">Cancel</button>
+    </li>`;
+}
+
+function saveEdit(i) {
+  const d = load();
+  const amount = parseFloat(document.getElementById(`edit-amt-${i}`).value);
+  if (!amount || amount <= 0) return;
+  d.spent[i].amount = amount;
+  d.spent[i].desc = document.getElementById(`edit-desc-${i}`).value.trim();
+  d.spent[i].cat = document.getElementById(`edit-cat-${i}`).value;
+  save(d);
+  renderExpenses();
 }
 
 function loadSettings() {
