@@ -3,9 +3,17 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.clearcents.app",
+    "linux": { "target": "AppImage" },
+    "win": { "target": "nsis" },
+    "mac": { "target": "dmg" }
   },
   "devDependencies": {
-    "electron": "^31.0.0"
+    "electron": "^31.0.0",
+    "electron-builder": "^24.0.0"
   }
 }
