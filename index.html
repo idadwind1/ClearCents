@@ -35,6 +35,10 @@
   .btn-primary { background: #2d6a4f; color: #fff; border: none; padding: 10px 24px; border-radius: 6px; font-size: 15px; cursor: pointer; margin-top: 8px; }
   .btn-primary:hover { background: #1b4332; }
   .suggestion { font-size: 12px; color: #888; margin-top: 4px; }
+  .cat-tag { display: inline-flex; align-items: center; gap: 4px; background: #d8f3dc; border-radius: 20px; padding: 3px 10px; font-size: 13px; margin: 3px; }
+  .cat-tag button { background: none; border: none; cursor: pointer; font-size: 14px; color: #555; line-height: 1; }
+  .add-cat-row { display: flex; gap: 8px; margin-top: 6px; }
+  .add-cat-row input { flex: 1; }
 </style>
 </head>
 <body>
@@ -102,6 +106,14 @@
   <div class="form-group">
     <label>Daily reminder time</label>
     <input type="time" id="s-notif-time">
+  </div>
+  <div class="form-group">
+    <label>Custom categories</label>
+    <div id="custom-cats-list"></div>
+    <div class="add-cat-row">
+      <input type="text" id="new-cat-input" placeholder="New category name">
+      <button class="btn-primary" onclick="addCustomCat()">Add</button>
+    </div>
   </div>
   <button class="btn-primary" onclick="saveSettings()">Save</button>
 </div>

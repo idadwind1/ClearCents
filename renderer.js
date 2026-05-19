@@ -1,4 +1,9 @@
-const CATS = ['Food', 'Transport', 'Entertainment', 'Shopping', 'Other'];
+const DEFAULT_CATS = ['Food', 'Transport', 'Entertainment', 'Shopping', 'Other'];
+function getCats() {
+  const d = load();
+  return [...DEFAULT_CATS, ...(d.customCats || [])];
+}
+const CATS = null; // replaced by getCats()
 const KEYWORDS = {
   Food: ['coffee', 'lunch', 'dinner', 'breakfast', 'restaurant', 'food', 'grocery', 'cafe', 'pizza', 'burger'],
   Transport: ['bus', 'taxi', 'uber', 'metro', 'train', 'gas', 'fuel', 'parking', 'ticket'],
@@ -7,7 +12,7 @@ const KEYWORDS = {
 };
 
 function load() {
-  return JSON.parse(localStorage.getItem('cc') || '{"budget":1500,"spent":[],"goal":{"name":"","target":0,"saved":0},"notifTime":"20:00"}');
+  return JSON.parse(localStorage.getItem('cc') || '{"budget":1500,"spent":[],"goal":{"name":"","target":0,"saved":0},"notifTime":"20:00","customCats":[]}');
 }
 function save(d) { localStorage.setItem('cc', JSON.stringify(d)); }
 
@@ -37,12 +42,13 @@ function renderHome() {
   document.getElementById('money-left').style.color = left < 0 ? '#c0392b' : '#2d6a4f';
 
   // Bar chart by category
+  const cats = getCats();
   const totals = {};
-  CATS.forEach(c => totals[c] = 0);
+  cats.forEach(c => totals[c] = 0);
   thisMonth.forEach(e => { totals[e.cat] = (totals[e.cat] || 0) + e.amount; });
   const max = Math.max(...Object.values(totals), 1);
   const chart = document.getElementById('bar-chart');
-  chart.innerHTML = CATS.map(c => `
+  chart.innerHTML = cats.map(c => `
     <div class="bar-col">
       <div class="bar" style="height:${Math.round((totals[c]/max)*90)}px" title="$${totals[c].toFixed(2)}"></div>
       <div class="bar-lbl">${c.slice(0,4)}</div>
@@ -58,7 +64,7 @@ function renderHome() {
 }
 
 function renderCatButtons() {
-  document.getElementById('cat-buttons').innerHTML = CATS.map(c =>
+  document.getElementById('cat-buttons').innerHTML = getCats().map(c =>
     `<button class="cat-btn${c === selectedCat ? ' selected' : ''}" onclick="selectCat('${c}')">${c}</button>`
   ).join('');
 }
@@ -73,6 +79,12 @@ function suggestCat() {
   let suggested = 'Other';
   for (const [cat, words] of Object.entries(KEYWORDS)) {
     if (words.some(w => desc.includes(w))) { suggested = cat; break; }
+  }
+  // also check custom cats by name match
+  if (suggested === 'Other') {
+    const custom = load().customCats || [];
+    const match = custom.find(c => desc.includes(c.toLowerCase()));
+    if (match) suggested = match;
   }
   document.getElementById('cat-suggestion').textContent = desc ? `Suggested: ${suggested}` : '';
   selectCat(suggested);
@@ -100,6 +112,33 @@ function loadSettings() {
   document.getElementById('s-goal-target').value = d.goal.target;
   document.getElementById('s-goal-saved').value = d.goal.saved;
   document.getElementById('s-notif-time').value = d.notifTime;
+  renderCustomCats();
+}
+
+function renderCustomCats() {
+  const d = load();
+  document.getElementById('custom-cats-list').innerHTML = (d.customCats || []).map(c =>
+    `<span class="cat-tag">${c} <button onclick="removeCat('${c}')">×</button></span>`
+  ).join('');
+}
+
+function addCustomCat() {
+  const input = document.getElementById('new-cat-input');
+  const name = input.value.trim();
+  if (!name) return;
+  const d = load();
+  d.customCats = d.customCats || [];
+  if (!getCats().includes(name)) d.customCats.push(name);
+  save(d);
+  input.value = '';
+  renderCustomCats();
+}
+
+function removeCat(name) {
+  const d = load();
+  d.customCats = (d.customCats || []).filter(c => c !== name);
+  save(d);
+  renderCustomCats();
 }
 
 function saveSettings() {
