@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ClearCents</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
+  nav { display: flex; background: #2d6a4f; padding: 10px 16px; gap: 12px; }
+  nav button { background: none; border: none; color: #fff; font-size: 15px; cursor: pointer; padding: 4px 10px; border-radius: 4px; }
+  nav button.active { background: rgba(255,255,255,0.25); }
+  .view { display: none; padding: 24px; }
+  .view.active { display: block; }
+
+  /* Home */
+  .big-num { font-size: 52px; font-weight: 700; color: #2d6a4f; }
+  .label { font-size: 13px; color: #666; margin-bottom: 4px; }
+  .section { margin-top: 28px; }
+  .bar-wrap { display: flex; align-items: flex-end; gap: 8px; height: 100px; margin-top: 8px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar { width: 32px; background: #52b788; border-radius: 4px 4px 0 0; min-height: 4px; }
+  .bar-lbl { font-size: 11px; color: #555; }
+  svg.ring { display: block; margin: 8px auto 0; }
+  .ring-label { text-anchor: middle; dominant-baseline: middle; font-size: 14px; fill: #2d6a4f; font-weight: 600; }
+
+  /* Add Expense */
+  .form-group { margin-bottom: 16px; }
+  label { display: block; font-size: 13px; margin-bottom: 4px; color: #444; }
+  input[type=number], input[type=text], input[type=time] {
+    width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px;
+  }
+  .cats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .cat-btn { padding: 6px 14px; border: 2px solid #ccc; border-radius: 20px; background: #fff; cursor: pointer; font-size: 13px; }
+  .cat-btn.selected { border-color: #2d6a4f; background: #d8f3dc; }
+  .btn-primary { background: #2d6a4f; color: #fff; border: none; padding: 10px 24px; border-radius: 6px; font-size: 15px; cursor: pointer; margin-top: 8px; }
+  .btn-primary:hover { background: #1b4332; }
+  .suggestion { font-size: 12px; color: #888; margin-top: 4px; }
+</style>
+</head>
+<body>
+<nav>
+  <button class="active" onclick="show('home')">Home</button>
+  <button onclick="show('add')">+ Expense</button>
+  <button onclick="show('settings')">Settings</button>
+</nav>
+
+<div id="home" class="view active">
+  <div class="label">Money left this month</div>
+  <div class="big-num" id="money-left">—</div>
+  <div class="section">
+    <div class="label">Spending by category</div>
+    <div class="bar-wrap" id="bar-chart"></div>
+  </div>
+  <div class="section">
+    <div class="label">Savings goal: <span id="goal-name">—</span></div>
+    <svg class="ring" width="120" height="120" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="50" fill="none" stroke="#e0e0e0" stroke-width="12"/>
+      <circle id="ring-arc" cx="60" cy="60" r="50" fill="none" stroke="#52b788" stroke-width="12"
+        stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round"
+        transform="rotate(-90 60 60)"/>
+      <text x="60" y="60" class="ring-label" id="ring-pct">0%</text>
+    </svg>
+  </div>
+</div>
+
+<div id="add" class="view">
+  <h2 style="margin-bottom:20px">Log Expense</h2>
+  <div class="form-group">
+    <label>Amount ($)</label>
+    <input type="number" id="exp-amount" min="0" step="0.01" placeholder="0.00">
+  </div>
+  <div class="form-group">
+    <label>Description</label>
+    <input type="text" id="exp-desc" placeholder="e.g. coffee, bus ticket…" oninput="suggestCat()">
+    <div class="suggestion" id="cat-suggestion"></div>
+  </div>
+  <div class="form-group">
+    <label>Category</label>
+    <div class="cats" id="cat-buttons"></div>
+  </div>
+  <button class="btn-primary" onclick="addExpense()">Add</button>
+</div>
+
+<div id="settings" class="view">
+  <h2 style="margin-bottom:20px">Settings</h2>
+  <div class="form-group">
+    <label>Monthly budget ($)</label>
+    <input type="number" id="s-budget" min="0" step="1">
+  </div>
+  <div class="form-group">
+    <label>Savings goal name</label>
+    <input type="text" id="s-goal-name">
+  </div>
+  <div class="form-group">
+    <label>Savings target ($)</label>
+    <input type="number" id="s-goal-target" min="0" step="1">
+  </div>
+  <div class="form-group">
+    <label>Amount saved so far ($)</label>
+    <input type="number" id="s-goal-saved" min="0" step="1">
+  </div>
+  <div class="form-group">
+    <label>Daily reminder time</label>
+    <input type="time" id="s-notif-time">
+  </div>
+  <button class="btn-primary" onclick="saveSettings()">Save</button>
+</div>
+
+<script src="renderer.js"></script>
+</body>
+</html>

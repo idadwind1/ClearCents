@@ -1,0 +1,344 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{mdframed}
+
+\definecolor{navyblue}{HTML}{1A3C6E}
+\definecolor{accentblue}{HTML}{2E86AB}
+\definecolor{lightgray}{HTML}{F0F4F8}
+\definecolor{green}{HTML}{D4EDDA}
+
+\hypersetup{colorlinks=true, linkcolor=navyblue, urlcolor=accentblue}
+
+\titleformat{\section}{\large\bfseries\color{navyblue}}{}{0em}{}[\color{accentblue}\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries\color{accentblue}}{}{0em}{}
+\titlespacing{\section}{0pt}{18pt}{6pt}
+\titlespacing{\subsection}{0pt}{12pt}{4pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\color{accentblue}ClearCents --- Research Report}
+\lhead{\small\color{navyblue}May 2026}
+\rfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+\begin{document}
+
+% ── COVER PAGE ──────────────────────────────────────────────────────────────
+\thispagestyle{empty}
+\vspace*{4cm}
+\begin{center}
+  {\Huge\bfseries\color{navyblue} ClearCents}\\[0.5em]
+  {\large\color{accentblue} Smart Personal Finance for the Paycheck-to-Paycheck Generation}\\[1em]
+  {\color{accentblue}\rule{12cm}{1pt}}\\[1em]
+  {\normalsize\textbf{Product Research \& Market Validation Report}}\\[0.4em]
+  {\normalsize Prepared by: Product Strategy Team \quad|\quad Date: May 2026}\\[2em]
+  {\small\itshape This report presents market research, user need validation, and the product
+  concept for \textbf{ClearCents} --- a personal finance application targeting financially
+  stressed consumers aged 22--40 who budget inconsistently or not at all.}
+\end{center}
+\vfill
+{\footnotesize\color{gray}
+Sources: PYMNTS Paycheck-to-Paycheck Index (2025), Academy Bank Consumer Survey (2025),
+TIAA-GFLEC Personal Finance Index (2025), Thales Digital Trust Index (2025),
+Finder UK AI Finance Survey (2025), ZipDo Budgeting Statistics (2026).}
+\newpage
+
+% ── SECTION 1 ───────────────────────────────────────────────────────────────
+\section{Executive Summary}
+
+Despite widespread financial stress among working-age adults, the adoption of personal
+budgeting tools remains critically low. Only \textbf{14\% of consumers} use daily budget
+reminders, and just \textbf{20.9\%} actively use a budgeting app --- yet \textbf{98\%} of
+those who do budget agree it helps them reach financial goals.
+
+This gap between need and adoption represents a significant product opportunity.
+\textbf{ClearCents} is designed to close that gap through radical simplicity, behavioral
+nudges, and AI-assisted categorization --- removing the friction that keeps users from
+engaging with their finances.
+
+% ── SECTION 2 ───────────────────────────────────────────────────────────────
+\section{The Problem}
+
+\subsection{2.1 Financial Stress Is at a Record High}
+
+As of May 2025, the PYMNTS Paycheck-to-Paycheck Index reached an all-time high:
+
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{L{7cm} L{3.5cm} L{4.5cm}}
+\rowcolor{navyblue}
+\color{white}\textbf{Metric} & \color{white}\textbf{Value} & \color{white}\textbf{Source} \\
+\rowcolor{lightgray}
+Americans living paycheck to paycheck & 68.4\% & PYMNTS, 2025 \\
+Struggling to cover monthly bills & 24.2\% & PYMNTS, 2025 \\
+\rowcolor{lightgray}
+Feel uneasy or anxious about finances & 60\% / 24\% & PYMNTS, 2025 \\
+Financial literacy score (unchanged since 2017) & 49\% correct & TIAA-GFLEC, 2025 \\
+\rowcolor{lightgray}
+Adults doing `OK or living comfortably' & 73\% & Fed SHED, 2025 \\
+\end{tabularx}
+\vspace{0.5em}
+
+\subsection{2.2 Budgeting Behavior Is Inconsistent}
+
+Academy Bank's 2025 consumer survey of over 1,000 adults revealed a stark disconnect
+between intent and action:
+
+\begin{itemize}
+  \item 83.1\% say they follow a budget --- but only 20.9\% use a dedicated budgeting app
+  \item 53.8\% track expenses manually (spreadsheets, pen \& paper)
+  \item 55.9\% cite overspending as their \#1 financial concern
+  \item 27.6\% report lack of financial knowledge as a barrier
+  \item 23.7\% struggle specifically with tracking expenses consistently
+\end{itemize}
+
+\subsection{2.3 Existing Tools Are Underused}
+
+The core reason adoption stalls is psychological, not technological. PYMNTS research
+identifies a `complex psychology' around confronting personal finances: users know budgeting
+helps, but the act of reviewing spending is uncomfortable. Existing apps are either too
+complex (Quicken, YNAB) or too passive (bank statements).
+
+Additionally, trust in digital financial platforms is declining: only \textbf{32\% of
+consumers aged 16--24} trusted banks with their personal data in 2025, down from 44\% the
+prior year (Thales Digital Trust Index, 2025).
+
+\newpage
+
+% ── SECTION 3 ───────────────────────────────────────────────────────────────
+\section{Target User Segment}
+
+Based on the research, ClearCents targets a well-defined, underserved segment:
+
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{L{4.5cm} L{10.5cm}}
+\rowcolor{navyblue}
+\color{white}\textbf{Attribute} & \color{white}\textbf{Profile} \\
+\rowcolor{lightgray}
+Age range & 22--40 years old \\
+Income & \$30,000--\$75,000 / year \\
+\rowcolor{lightgray}
+Budgeting behavior & Inconsistent or manual (spreadsheets, notes) \\
+Financial situation & Paycheck-to-paycheck or moderate savings \\
+\rowcolor{lightgray}
+Tech comfort & Smartphone-native, uses 3--5 apps daily \\
+Pain point & Overspending, no clear picture of where money goes \\
+\rowcolor{lightgray}
+Motivation & Wants to save but doesn't know where to start \\
+Distrust level & Skeptical of sharing bank credentials with apps \\
+\end{tabularx}
+\vspace{0.5em}
+
+\subsection{3.1 Why This Segment Is Underserved}
+
+\begin{itemize}
+  \item Gen Z (55\%) and Millennials (48\%) are the most likely to use advanced budgeting
+        tools --- yet daily app adoption sits at only 14\% (PYMNTS, 2025)
+  \item 40\% of UK consumers turned to AI tools like ChatGPT for financial advice in 2025
+        (Finder, 2025) --- indicating demand for accessible, conversational financial guidance
+  \item 91\% of financial advisors recommend budgeting tools, but most consumers can't afford
+        a financial advisor (ZipDo, 2026)
+  \item 54\% of users who receive daily budget reminders report feeling financially comfortable
+        --- showing reminders demonstrably work
+\end{itemize}
+
+\subsection{3.2 Segment Size Estimate}
+
+The U.S. adult population aged 22--40 is approximately \textbf{84 million people}. With
+68.4\% living paycheck to paycheck and only 20.9\% using a budgeting app, the addressable
+underserved population is roughly \textbf{47 million adults} who need a tool but don't have
+one they consistently use.
+
+\newpage
+
+% ── SECTION 4 ───────────────────────────────────────────────────────────────
+\section{The Product: ClearCents}
+
+\textbf{ClearCents} is a mobile-first personal finance app built around one core insight:
+\textit{people don't fail at budgeting because they lack willpower --- they fail because
+existing tools make it too hard to start and too uncomfortable to continue.}
+
+\subsection{4.1 Core Value Proposition}
+
+ClearCents reduces the friction of financial awareness to near-zero through five pillars:
+
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{L{3cm} L{5.5cm} L{6.5cm}}
+\rowcolor{navyblue}
+\color{white}\textbf{Pillar} & \color{white}\textbf{Feature} & \color{white}\textbf{Problem It Solves} \\
+\rowcolor{lightgray}
+Radical Simplicity &
+  One-screen daily snapshot: income left, top 3 spending categories, one action &
+  Complexity overwhelm; users abandon multi-tab dashboards \\
+Behavioral Nudges &
+  Daily `money moment' notification --- 1 question, 1 insight, 30 seconds &
+  Low engagement; users forget to check their finances \\
+\rowcolor{lightgray}
+AI Categorization &
+  Auto-categorize manual entries using local on-device ML; no bank login required &
+  Privacy distrust; reluctance to share credentials \\
+Goal Anchoring &
+  Every budget is tied to a named goal (e.g.\ `Vacation fund', `Emergency buffer') &
+  Abstract budgeting feels pointless without a concrete target \\
+\rowcolor{lightgray}
+Shame-Free Design &
+  No red numbers, no `you overspent' alerts --- only forward-looking suggestions &
+  Psychological avoidance of confronting finances \\
+\end{tabularx}
+\vspace{0.5em}
+
+\subsection{4.2 Key Differentiators vs.\ Competitors}
+
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{L{4.5cm} C{2cm} C{2.5cm} C{2cm} C{2cm}}
+\rowcolor{navyblue}
+\color{white}\textbf{Feature} &
+\color{white}\textbf{ClearCents} &
+\color{white}\textbf{Mint (defunct)} &
+\color{white}\textbf{YNAB} &
+\color{white}\textbf{Bank App} \\
+\rowcolor{lightgray}
+No bank login required & \cellcolor{green}Yes & No & No & N/A \\
+Daily micro-engagement & \cellcolor{green}Yes & No & No & No \\
+\rowcolor{lightgray}
+Shame-free UX & \cellcolor{green}Yes & No & No & No \\
+Goal-anchored budgets & \cellcolor{green}Yes & Partial & Yes & No \\
+\rowcolor{lightgray}
+AI categorization & \cellcolor{green}Yes (on-device) & Yes (cloud) & No & Partial \\
+Free tier & \cellcolor{green}Yes & Was free & No (\$14.99/mo) & Yes \\
+\end{tabularx}
+\vspace{0.5em}
+
+\newpage
+
+% ── SECTION 5 ───────────────────────────────────────────────────────────────
+\section{Software Functionality}
+
+\textbf{ClearCents} is a personal budgeting app for people aged 22--40 who struggle to
+track their spending. It is designed to be as simple as possible --- no bank login, no
+complex setup, no overwhelming dashboards.
+
+\subsection{5.1 Log Daily Expenses}
+
+Users can record a purchase in 2 taps: enter the amount, then confirm. The app
+automatically suggests a category (food, transport, entertainment, etc.) using an
+AI model that runs entirely on the device --- no data is sent to any server.
+
+\subsection{5.2 See How Much Money Is Left}
+
+The home screen shows one number: how much of the monthly budget remains. Below it,
+a simple bar chart shows the top spending categories so the user can see at a glance
+where their money is going.
+
+\subsection{5.3 Set a Savings Goal}
+
+The user picks a goal (e.g.\ ``Save \$500 for a trip'') and a target date. A progress
+ring on the home screen updates in real time as they log expenses, showing how on-track
+they are.
+
+\subsection{5.4 Daily Reminder Notification}
+
+Once a day, the app sends a short push notification prompting the user to log any
+spending they may have forgotten. The notification is timed to a window the user
+chooses (e.g.\ after dinner). It can be answered with a single tap.
+
+\subsection{5.5 Privacy \& Data}
+
+All data is stored locally on the user's phone. No bank account connection is required.
+The app does not collect or sell personal financial data.
+
+\newpage
+
+% ── SECTION 6 ───────────────────────────────────────────────────────────────
+\section{Market Opportunity}
+
+\subsection{6.1 Market Size}
+
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{L{6.5cm} L{3cm} L{5.5cm}}
+\rowcolor{navyblue}
+\color{white}\textbf{Metric} & \color{white}\textbf{Estimate} & \color{white}\textbf{Basis} \\
+\rowcolor{lightgray}
+U.S. adults aged 22--40 & \textasciitilde84 million & U.S. Census 2024 \\
+Living paycheck to paycheck & \textasciitilde57 million & 68.4\% of segment \\
+\rowcolor{lightgray}
+Not using any budgeting app & \textasciitilde47 million & 79.1\% of P2P segment \\
+Willing to try a free app (est.\ 15\%) & \textasciitilde7 million & Conservative conversion \\
+\rowcolor{lightgray}
+Convertible to paid (\$4.99/mo, est.\ 20\%) & \textasciitilde1.4 million & Industry avg.\ freemium rate \\
+\rowcolor{green}
+\textbf{Annual recurring revenue potential} & \textbf{\textasciitilde\$84M ARR} & \textbf{1.4M $\times$ \$59.88/yr} \\
+\end{tabularx}
+\vspace{0.5em}
+
+\subsection{6.2 Timing}
+
+\begin{itemize}
+  \item Mint shut down in January 2024, leaving millions of users without a trusted free tool
+  \item AI-powered financial tools are gaining consumer acceptance: 40\% of UK adults already
+        use AI for financial guidance (Finder, 2025)
+  \item Financial anxiety is at record highs, creating urgency and receptiveness to solutions
+  \item On-device ML makes privacy-preserving finance apps technically feasible for the first time
+\end{itemize}
+
+% ── SECTION 7 ───────────────────────────────────────────────────────────────
+\section{Risks \& Mitigations}
+
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{L{5cm} L{10cm}}
+\rowcolor{navyblue}
+\color{white}\textbf{Risk} & \color{white}\textbf{Mitigation} \\
+\rowcolor{lightgray}
+Low engagement / app abandonment &
+  Daily micro-nudge design; habit loop built into core UX from day one \\
+Privacy concerns around financial data &
+  No bank login required; on-device ML; transparent data policy \\
+\rowcolor{lightgray}
+Competition from bank apps adding features &
+  Banks are trusted but not loved; ClearCents focuses on UX banks can't match \\
+Freemium conversion rate below target &
+  Premium tier unlocks AI insights and multi-goal tracking --- clear value delta \\
+\end{tabularx}
+\vspace{0.5em}
+
+% ── SECTION 8 ───────────────────────────────────────────────────────────────
+\section{Conclusion}
+
+The data is unambiguous: tens of millions of working-age Americans are financially stressed,
+know they should budget, but don't use the tools available to them. The barrier is not
+awareness --- it's friction, shame, and complexity.
+
+\textbf{ClearCents} is designed from the ground up to remove those barriers. By combining
+radical simplicity, behavioral science, and privacy-first AI, it targets a validated,
+underserved segment of \textasciitilde47 million adults with a clear path to sustainable revenue.
+
+\vspace{1em}
+\hrule
+\vspace{0.5em}
+{\footnotesize\textbf{Sources}}\\
+{\footnotesize
+1. PYMNTS Paycheck-to-Paycheck Index, May 2025 --- pymnts.com\\
+2. Academy Bank Consumer Budgeting Survey, 2025 --- academybank.com\\
+3. TIAA-GFLEC Personal Finance Index, 2025 --- finance.yahoo.com\\
+4. Thales Digital Trust Index, 2025 --- marketinsytedigest.beehiiv.com\\
+5. Finder UK AI Finance Survey, 2025 --- fintech.global\\
+6. ZipDo Budgeting Statistics, 2026 --- zipdo.co\\
+7. Federal Reserve SHED Survey, 2025 --- axios.com\\
+}
+
+\end{document}
