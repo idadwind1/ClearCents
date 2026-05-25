@@ -12,7 +12,9 @@ const KEYWORDS = {
 };
 
 function load() {
-  return JSON.parse(localStorage.getItem('cc') || '{"budget":1500,"spent":[],"goal":{"name":"","target":0,"saved":0},"notifTime":"20:00","customCats":[]}');
+  const d = JSON.parse(localStorage.getItem('cc') || '{"budget":1500,"spent":[],"goal":{"name":"","target":0,"saved":0},"notifTime":"20:00","customCats":[]}');
+  if (!d.aiConfig) d.aiConfig = { enabled: false, apiKey: '', baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o-mini' };
+  return d;
 }
 function save(d) { localStorage.setItem('cc', JSON.stringify(d)); }
 
@@ -21,13 +23,14 @@ let selectedCat = 'Other';
 function show(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('nav button').forEach((b, i) => {
-    b.classList.toggle('active', ['home','add','expenses','settings'][i] === id);
+    b.classList.toggle('active', ['home','add','expenses','settings','insights'][i] === id);
   });
   document.getElementById(id).classList.add('active');
   if (id === 'home') renderHome();
   if (id === 'settings') loadSettings();
   if (id === 'add') renderCatButtons();
   if (id === 'expenses') renderExpenses();
+  if (id === 'insights') renderInsights();
 }
 
 function renderHome() {
@@ -164,6 +167,15 @@ function loadSettings() {
   document.getElementById('s-goal-target').value = d.goal.target;
   document.getElementById('s-goal-saved').value = d.goal.saved;
   document.getElementById('s-notif-time').value = d.notifTime;
+  const ai = d.aiConfig;
+  document.getElementById('s-ai-enabled').checked = ai.enabled;
+  document.getElementById('s-ai-url').value = ai.baseUrl;
+  document.getElementById('s-ai-key').value = ai.apiKey;
+  document.getElementById('s-ai-model').value = ai.model;
+  document.getElementById('ai-config-fields').style.display = ai.enabled ? 'block' : 'none';
+  document.getElementById('s-ai-enabled').onchange = e => {
+    document.getElementById('ai-config-fields').style.display = e.target.checked ? 'block' : 'none';
+  };
   renderCustomCats();
 }
 
@@ -200,9 +212,77 @@ function saveSettings() {
   d.goal.target = parseFloat(document.getElementById('s-goal-target').value) || 0;
   d.goal.saved = parseFloat(document.getElementById('s-goal-saved').value) || 0;
   d.notifTime = document.getElementById('s-notif-time').value;
+  d.aiConfig = {
+    enabled: document.getElementById('s-ai-enabled').checked,
+    baseUrl: document.getElementById('s-ai-url').value.trim(),
+    apiKey: document.getElementById('s-ai-key').value.trim(),
+    model: document.getElementById('s-ai-model').value.trim()
+  };
   save(d);
   if (window.api) window.api.scheduleNotif(d.notifTime);
   show('home');
+}
+
+function aggregateMonthly() {
+  const months = {};
+  load().spent.forEach(e => {
+    const dt = new Date(e.date);
+    const key = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`;
+    if (!months[key]) months[key] = { total: 0, cats: {} };
+    months[key].total += e.amount;
+    months[key].cats[e.cat] = (months[key].cats[e.cat] || 0) + e.amount;
+  });
+  return months;
+}
+
+function buildSystemPrompt() {
+  const d = load();
+  const lines = Object.entries(aggregateMonthly()).sort().map(([m, v]) => {
+    const cats = Object.entries(v.cats).map(([c, a]) => `  ${c}: $${a.toFixed(2)}`).join('\n');
+    return `${m} (total $${v.total.toFixed(2)}):\n${cats}`;
+  }).join('\n\n');
+  return `You are a personal finance assistant. Budget: $${d.budget}/month. Goal: "${d.goal.name||'none'}", target $${d.goal.target}, saved $${d.goal.saved}.\n\nSpending history:\n${lines||'No data.'}\n\nBe concise. Plain text only.`;
+}
+
+async function callAI(system, user) {
+  const { apiKey, baseUrl, model } = load().aiConfig;
+  if (!apiKey) throw new Error('No API key set in Settings.');
+  const res = await fetch(`${baseUrl}/chat/completions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({ model: model||'gpt-4o-mini', messages: [{ role:'system', content:system },{ role:'user', content:user }], max_tokens: 600 })
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  return (await res.json()).choices[0].message.content.trim();
+}
+
+function renderInsights() {
+  const enabled = load().aiConfig.enabled;
+  document.getElementById('insights-disabled').style.display = enabled ? 'none' : 'block';
+  document.getElementById('insights-content').style.display = enabled ? 'block' : 'none';
+}
+
+async function generateInsights() {
+  const btn = document.getElementById('insights-btn');
+  const report = document.getElementById('insights-report');
+  btn.disabled = true; btn.textContent = 'Analyzing…'; report.textContent = '';
+  try {
+    report.textContent = await callAI(buildSystemPrompt(), 'Analyze my spending: 1) trends, 2) improvement tips, 3) budget forecast, 4) anomalies.');
+  } catch(e) { report.textContent = 'Error: ' + e.message; }
+  btn.disabled = false; btn.textContent = 'Analyze my spending';
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const q = input.value.trim(); if (!q) return;
+  input.value = '';
+  const entry = document.createElement('div');
+  entry.className = 'chat-msg';
+  entry.innerHTML = `<div class="q">You: ${q}</div><div class="a">…</div>`;
+  document.getElementById('chat-history').prepend(entry);
+  try {
+    entry.querySelector('.a').textContent = await callAI(buildSystemPrompt(), q);
+  } catch(e) { entry.querySelector('.a').textContent = 'Error: ' + e.message; }
 }
 
 // Check notification time every minute

@@ -51,6 +51,9 @@
   .cat-tag button { background: none; border: none; cursor: pointer; font-size: 14px; color: #555; line-height: 1; }
   .add-cat-row { display: flex; gap: 8px; margin-top: 6px; }
   .add-cat-row input { flex: 1; }
+  .chat-msg { padding:8px 0; border-bottom:1px solid #eee; }
+  .chat-msg .q { color:#2d6a4f; font-weight:600; }
+  .chat-msg .a { color:#333; margin-top:4px; }
 </style>
 </head>
 <body>
@@ -59,6 +62,7 @@
   <button onclick="show('add')">+ Expense</button>
   <button onclick="show('expenses')">Expenses</button>
   <button onclick="show('settings')">Settings</button>
+  <button onclick="show('insights')">Insights</button>
 </nav>
 
 <div id="home" class="view active">
@@ -133,7 +137,44 @@
       <button class="btn-primary" onclick="addCustomCat()">Add</button>
     </div>
   </div>
+  <div class="form-group">
+    <label>AI Insights</label>
+    <label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:normal">
+      <input type="checkbox" id="s-ai-enabled"> Enable AI spending analysis
+    </label>
+  </div>
+  <div id="ai-config-fields">
+    <div class="form-group">
+      <label>API Base URL</label>
+      <input type="text" id="s-ai-url" placeholder="https://api.openai.com/v1">
+    </div>
+    <div class="form-group">
+      <label>API Key</label>
+      <input type="password" id="s-ai-key" placeholder="sk-…">
+    </div>
+    <div class="form-group">
+      <label>Model</label>
+      <input type="text" id="s-ai-model" placeholder="gpt-4o-mini">
+    </div>
+  </div>
   <button class="btn-primary" onclick="saveSettings()">Save</button>
+</div>
+
+<div id="insights" class="view">
+  <h2 style="margin-bottom:16px">AI Insights</h2>
+  <div id="insights-disabled" style="color:#888;font-size:14px">Enable AI in Settings to use this feature.</div>
+  <div id="insights-content" style="display:none">
+    <button class="btn-primary" onclick="generateInsights()" id="insights-btn">Analyze my spending</button>
+    <div id="insights-report" style="margin-top:20px;font-size:14px;line-height:1.6;white-space:pre-wrap;background:#f9f9f9;border-radius:6px;padding:14px;border:1px solid #e0e0e0"></div>
+    <div class="section" style="margin-top:20px">
+      <div class="label" style="margin-bottom:8px">Ask about your spending</div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="chat-input" placeholder="e.g. Where did I overspend last month?" style="flex:1">
+        <button class="btn-primary" onclick="sendChat()" style="margin-top:0;padding:8px 16px">Ask</button>
+      </div>
+      <div id="chat-history" style="margin-top:12px;font-size:13px"></div>
+    </div>
+  </div>
 </div>
 
 <script src="renderer.js"></script>
