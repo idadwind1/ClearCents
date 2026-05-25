@@ -6,6 +6,21 @@ on:
       - 'v*'
 
 jobs:
+  latex:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: xu-cheng/latex-action@v3
+        with:
+          root_file: report.tex
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: report.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   release:
     permissions:
       contents: write
