@@ -171,7 +171,11 @@ function loadSettings() {
   document.getElementById('s-ai-enabled').checked = ai.enabled;
   document.getElementById('s-ai-url').value = ai.baseUrl;
   document.getElementById('s-ai-key').value = ai.apiKey;
-  document.getElementById('s-ai-model').value = ai.model;
+  const sel = document.getElementById('s-ai-model');
+  if (!sel.options.length || ![...sel.options].find(o => o.value === ai.model)) {
+    sel.innerHTML = `<option value="${ai.model}">${ai.model}</option>`;
+  }
+  sel.value = ai.model;
   document.getElementById('ai-config-fields').style.display = ai.enabled ? 'block' : 'none';
   document.getElementById('s-ai-enabled').onchange = e => {
     document.getElementById('ai-config-fields').style.display = e.target.checked ? 'block' : 'none';
@@ -242,6 +246,20 @@ function buildSystemPrompt() {
     return `${m} (total $${v.total.toFixed(2)}):\n${cats}`;
   }).join('\n\n');
   return `You are a personal finance assistant. Budget: $${d.budget}/month. Goal: "${d.goal.name||'none'}", target $${d.goal.target}, saved $${d.goal.saved}.\n\nSpending history:\n${lines||'No data.'}\n\nBe concise. Plain text only.`;
+}
+
+async function fetchModels() {
+  const url = document.getElementById('s-ai-url').value.trim();
+  const key = document.getElementById('s-ai-key').value.trim();
+  if (!url || !key) { alert('Enter API Base URL and API Key first.'); return; }
+  try {
+    const res = await fetch(`${url}/models`, { headers: { 'Authorization': `Bearer ${key}` } });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const models = (await res.json()).data.map(m => m.id).sort();
+    const sel = document.getElementById('s-ai-model');
+    const current = sel.value;
+    sel.innerHTML = models.map(m => `<option value="${m}"${m===current?' selected':''}>${m}</option>`).join('');
+  } catch(e) { alert('Failed to fetch models: ' + e.message); }
 }
 
 async function callAI(system, user) {

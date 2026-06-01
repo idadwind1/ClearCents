@@ -154,7 +154,10 @@
     </div>
     <div class="form-group">
       <label>Model</label>
-      <input type="text" id="s-ai-model" placeholder="gpt-4o-mini">
+      <div style="display:flex;gap:8px">
+        <select id="s-ai-model" style="flex:1"></select>
+        <button type="button" onclick="fetchModels()">Fetch models</button>
+      </div>
     </div>
   </div>
   <button class="btn-primary" onclick="saveSettings()">Save</button>
