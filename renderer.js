@@ -312,3 +312,7 @@ setInterval(() => {
 }, 60000);
 
 renderHome();
+if (window.api) {
+  window.api.scheduleNotif(load().notifTime);
+  if (window.api.version) document.getElementById('app-version').textContent = 'v' + window.api.version;
+}

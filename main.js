@@ -24,15 +24,13 @@ function scheduleNotif(time) {
     if (hhmm === time) {
       new Notification({ title: 'ClearCents', body: 'Time to log your expenses!' }).show();
     }
-  }, 60000);
+  }, 30000);
 }
 
 ipcMain.on('schedule-notif', (_, time) => scheduleNotif(time));
 
 app.whenReady().then(() => {
   createWindow();
-  // Default daily reminder at 20:00
-  scheduleNotif('20:00');
 });
 
 app.on('window-all-closed', () => app.quit());
