@@ -8,6 +8,7 @@
   },
   "build": {
     "appId": "com.clearcents.app",
+    "artifactName": "${name}-${version}-${arch}.${ext}",
     "linux": { "target": "AppImage" },
     "win": { "target": "nsis" },
     "mac": { "target": "dmg" }
